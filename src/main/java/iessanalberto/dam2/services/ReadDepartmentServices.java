@@ -7,16 +7,17 @@ import jakarta.xml.bind.Unmarshaller;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 
 import static java.lang.IO.println;
 
 public class ReadDepartmentServices {
-    public static void readDepartment() {
+    public static List<Department> readDepartment() {
 
-
+        Departments departments = new Departments();
         final Path ruta = Path.of("src/main/resources/departamento.xml");
         if (Files.isReadable(ruta)) {
-            Departments departments = new Departments();
+
             JAXBContext jaxbContext;
             try {
                 jaxbContext = JAXBContext.newInstance(Departments.class);
@@ -25,10 +26,12 @@ public class ReadDepartmentServices {
 
 
 
+
             } catch (JAXBException e) {
                 throw new RuntimeException(e);
             }
         }
+        return departments.getDepartments();
     }
 }
 

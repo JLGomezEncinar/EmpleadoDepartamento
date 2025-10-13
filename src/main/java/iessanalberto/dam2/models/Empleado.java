@@ -1,10 +1,22 @@
 package iessanalberto.dam2.models;
 
+import com.google.gson.annotations.SerializedName;
+
 public class Empleado {
     private String nombre;
     private double sueldo;
+    @SerializedName("año")
     private Integer anyo_nacimiento;
     private Integer antiguedad;
+    private String idDep;
+
+    public String getIdDep() {
+        return idDep;
+    }
+
+    public void setIdDep(String idDep) {
+        this.idDep = idDep;
+    }
 
     public Empleado() {
     }
