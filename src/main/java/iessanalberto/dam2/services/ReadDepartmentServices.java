@@ -9,7 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
-import static java.lang.IO.println;
+
 
 public class ReadDepartmentServices {
     public static List<Department> readDepartment() {
