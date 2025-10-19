@@ -29,18 +29,46 @@ public class LeerNuevosEmpleados {
 
 
                 Gson gson = new Gson();
-                Type listType = new TypeToken<ArrayList<Empleado>>(){}.getType();
-                    empleados = gson.fromJson(empleadoJsonString, listType);
-                    for (Empleado empleado: empleados) {
-                        empleado.setAntiguedad(userMethods.fechaSistema());
-                    }
+                Type listType = new TypeToken<ArrayList<Empleado>>() {
+                }.getType();
+                empleados = gson.fromJson(empleadoJsonString, listType);
+                for (Empleado empleado : empleados) {
+
+                    empleado.setAntiguedad(userMethods.fechaSistema());
+
+                }
                 gson = new GsonBuilder().setPrettyPrinting().create();
 
-                try (FileWriter writer = new FileWriter("src/main/resources/empleados.json")) {
+                try (FileWriter writer = new FileWriter("target/empleados.json")) {
                     gson.toJson(empleados, writer);
                 }
 
-                mensaje = "Instituto cargado correctamente";
+
+            } catch (IOException e) {
+                mensaje = "Error al leer la ruta del archivo JSON";
+            }
+
+        }
+        return empleados;
+    }
+    public static ArrayList<Empleado> leerEmpleadosConDepartamentoJSON(Path path) {
+        UserMethods userMethods = new UserMethods();
+        String mensaje = "";
+        ArrayList<Empleado> empleados = new ArrayList<>();
+
+        if (Files.isReadable(path)) {
+
+            try {
+                String empleadoJsonString = Files.readString(path);
+
+
+                Gson gson = new Gson();
+                Type listType = new TypeToken<ArrayList<Empleado>>() {
+                }.getType();
+                empleados = gson.fromJson(empleadoJsonString, listType);
+
+
+
             } catch (IOException e) {
                 mensaje = "Error al leer la ruta del archivo JSON";
             }

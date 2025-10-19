@@ -2,7 +2,10 @@ package iessanalberto.dam2.models;
 
 import jakarta.xml.bind.annotation.XmlAttribute;
 import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlElementWrapper;
 import jakarta.xml.bind.annotation.XmlRootElement;
+
+import java.util.ArrayList;
 
 @XmlRootElement(name = "departamento")
 
@@ -10,6 +13,7 @@ public class Department {
     private String id;
     private String name;
     private String locality;
+    private ArrayList<Empleado> empleados;
 
     @XmlElement(name = "nombre")
     public String getName() {
@@ -39,5 +43,15 @@ public class Department {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    @XmlElementWrapper(name = "empleados")
+    @XmlElement(name = "empleado")
+    public ArrayList<Empleado> getEmpleados() {
+        return empleados;
+    }
+
+    public void setEmpleados(ArrayList<Empleado> empleados) {
+        this.empleados = empleados;
     }
 }

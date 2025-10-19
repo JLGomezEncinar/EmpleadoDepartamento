@@ -3,12 +3,11 @@ package iessanalberto.dam2.cmd;
 import iessanalberto.dam2.libs.UserMethods;
 import iessanalberto.dam2.models.Department;
 import iessanalberto.dam2.models.Empleado;
+import iessanalberto.dam2.services.EscribirEmpleados;
 import iessanalberto.dam2.services.LeerNuevosEmpleados;
 import iessanalberto.dam2.services.ReadDepartmentServices;
+import jakarta.xml.bind.JAXBException;
 
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -18,7 +17,6 @@ public class MenuInicial {
 
     private Scanner scanner = new Scanner(System.in);
     private boolean salir = false;
-    private boolean introducir = false;
     private boolean comprobar = false;
     private boolean seguir = false;
 
@@ -27,15 +25,17 @@ public class MenuInicial {
     ReadDepartmentServices readDepartmentServices = new ReadDepartmentServices();
     UserMethods userMethods = new UserMethods();
     LeerNuevosEmpleados leerNuevosEmpleados = new LeerNuevosEmpleados();
+    EscribirEmpleados escribirEmpleados = new EscribirEmpleados();
 
     public void muestraMenu() {
         String opcion;
         do {
             System.out.println("Elige una opcion:");
             System.out.println("1. Introducir empleados");
-            System.out.println("2. Sin implementar");
+            System.out.println("2. Mostrar departamentos.xml");
             System.out.println("3. Añadir empleados a departamento");
             System.out.println("4. Leer nuevosEmpleados.json");
+            System.out.println("5. Escribir empresa.xml y empresa.json");
             System.out.println("0. Salir");
             opcion = this.pideOpcion();
             this.procesaOpcion(opcion);
@@ -55,15 +55,8 @@ public class MenuInicial {
             println("Introduce la antiguedad del empleado");
             empleadoAux.setAntiguedad(Integer.parseInt(pideOpcion()));
             empleados.add(empleadoAux);
-            try (PrintWriter writer = new PrintWriter(new FileWriter("target/empleados.csv"),true)) {
-
-                writer.println(empleadoAux.getNombre()+ "," + empleadoAux.getSueldo()+ ","+empleadoAux.getAnyo_nacimiento()+","+empleadoAux.getAntiguedad());
 
 
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
 
 
             do {
@@ -71,18 +64,23 @@ public class MenuInicial {
                 continuar = this.pideOpcion().toLowerCase();
                 if (continuar.equals("s") || continuar.equals("n")) {
                     comprobar = true;
-                    introducirEmpleado(continuar);
+                } else {
+                        println("Opción no válida");
+
                 }
 
             } while (!comprobar);
             comprobar = false;
 
-        } while (!introducir);
+        } while (continuar.equals("s"));
+        userMethods.guardarEmpleadosCSV(empleados);
+
     }
 
     private void asignarEmpleado() {
         String avanzar;
-        departmentList = (ArrayList<Department>) readDepartmentServices.readDepartment();
+        departmentList = (ArrayList<Department>) readDepartmentServices.readDepartment().getDepartments();
+        userMethods.leerCSV(empleados,"target/empleados.csv");
         for (Empleado empleado : empleados) {
             do {
                 println("Introduce el departamento al que se asignará el empleado " + empleado.getNombre() + ":");
@@ -92,10 +90,11 @@ public class MenuInicial {
                     numDepartamento++;
                 }
                 avanzar = this.pideOpcion();
-                introducirDepartamento(avanzar);
+                introducirDepartamento(avanzar,empleado);
             } while (!seguir);
             seguir = false;
         }
+        userMethods.guardarEmpleadosConDepartamentoCSV(empleados);
     }
 
 
@@ -107,12 +106,24 @@ public class MenuInicial {
         switch (opcion) {
             case "0" -> salir = true;
             case "1" -> menuEmpleados();
-            case "2" -> readDepartmentServices.readDepartment();
+            case "2" -> {
+                ArrayList<Department> departmentList = (ArrayList<Department>) readDepartmentServices.readDepartment().getDepartments();
+                for (Department department: departmentList){
+                    println(department.getId()+" "+department.getName()+" "+department.getLocality());
+                }
+            }
             case "3" -> asignarEmpleado();
             case "4" -> {
-                ArrayList<Empleado> empleados1 = (leerNuevosEmpleados.leerEmpleadosJSON(userMethods.pedirRutaJson("Introduce la ruta al archivo JSON")));
-                for (Empleado empleado : empleados1) {
-                    println(empleado.getNombre() + empleado.getAntiguedad());
+               ArrayList<Empleado> empleados1 = (leerNuevosEmpleados.leerEmpleadosJSON(userMethods.pedirRutaJson("Introduce la ruta al archivo JSON")));
+
+            }
+            case "5" -> {
+                try {
+                    escribirEmpleados.escribirEmpresa(empleados);
+                    empleados.clear();
+                    escribirEmpleados.escribirEmpresaJSON(empleados);
+                } catch (JAXBException e) {
+                    throw new RuntimeException(e);
                 }
             }
 
@@ -120,18 +131,24 @@ public class MenuInicial {
         }
     }
 
-    private void introducirEmpleado(String continuar) {
-        switch (continuar) {
-            case "s" -> {
-            }
-            case "n" -> introducir = true;
-            default -> System.out.println("Opcion no valida");
-        }
-    }
-
-    private void introducirDepartamento(String adicionar) {
+    private void introducirDepartamento(String adicionar, Empleado empleado) {
         switch (adicionar) {
-            case "Ventas", "Producción", "Informática", "Compras" -> seguir = true;
+            case "Ventas" ->{
+                empleado.setIdDep("1");
+                    seguir = true;
+            }
+            case "Producción" -> {
+                empleado.setIdDep("2");
+                seguir = true;
+            }
+            case "Informática" -> {
+                empleado.setIdDep("3");
+                seguir = true;
+            }
+            case "Compras" ->{
+                empleado.setIdDep("4");
+                seguir = true;
+            }
 
 
             default -> System.out.println("Opcion no valida");

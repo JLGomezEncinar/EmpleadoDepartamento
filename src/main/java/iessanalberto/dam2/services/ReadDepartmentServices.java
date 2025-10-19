@@ -12,7 +12,7 @@ import java.util.List;
 
 
 public class ReadDepartmentServices {
-    public static List<Department> readDepartment() {
+    public static Departments readDepartment() {
 
         Departments departments = new Departments();
         final Path ruta = Path.of("src/main/resources/departamento.xml");
@@ -31,7 +31,7 @@ public class ReadDepartmentServices {
                 throw new RuntimeException(e);
             }
         }
-        return departments.getDepartments();
+        return departments;
     }
 }
 

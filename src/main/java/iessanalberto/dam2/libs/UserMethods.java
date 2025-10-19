@@ -1,20 +1,26 @@
 package iessanalberto.dam2.libs;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import iessanalberto.dam2.models.Department;
+import iessanalberto.dam2.models.Departments;
+import iessanalberto.dam2.models.Empleado;
+import iessanalberto.dam2.services.ReadDepartmentServices;
+
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Map;
 
 public class UserMethods {
     static void mostrarEnPantalla(String mensaje) {
         System.out.println(mensaje);
     }
-    public static Integer fechaSistema(){
+
+    public static Integer fechaSistema() {
         return Integer.parseInt(LocalDate.now().format(DateTimeFormatter.ofPattern("ddMMyyyy")));
     }
 
@@ -50,7 +56,7 @@ public class UserMethods {
                 ruta = Path.of(rutaString);
                 if (rutaString.endsWith(".xml")) {
                     pathOK = true;
-                }else{
+                } else {
                     mostrarEnPantalla("La ruta no se corresponde con un archivo xml. ");
                 }
             } catch (IOException e) {
@@ -74,7 +80,7 @@ public class UserMethods {
                 ruta = Path.of(rutaString);
                 if (rutaString.endsWith(".json")) {
                     pathOK = true;
-                }else{
+                } else {
                     mostrarEnPantalla("La ruta no se corresponde con un archivo json. ");
                 }
             } catch (IOException e) {
@@ -127,12 +133,11 @@ public class UserMethods {
         //método que comprueba si se puede escribir en un fichero y si no lo crea
         boolean ficheroOK = false;
         if (Files.exists(p)) {
-            if (Files.isWritable(p)){
+            if (Files.isWritable(p)) {
                 ficheroOK = true;
             }
 
-        }
-        else {
+        } else {
             try {
                 Files.createFile(p);
                 ficheroOK = true;
@@ -142,6 +147,90 @@ public class UserMethods {
         }
         return ficheroOK;
     }
+
+    public static void leerCSV(ArrayList<Empleado> empleados, String rutaArchivo) {
+
+
+        String linea;
+
+
+        try (BufferedReader br = new BufferedReader(new FileReader(rutaArchivo))) {
+
+
+            while ((linea = br.readLine()) != null) {
+                // Divide la línea en columnas separadas por comas
+                String[] columnas = linea.split(",");
+
+                // Ejemplo: imprimir los valores
+
+                Empleado empleadoAux = new Empleado();
+                empleadoAux.setNombre(columnas[0]);
+                empleadoAux.setSueldo(Double.parseDouble(columnas[1]));
+                empleadoAux.setAnyo_nacimiento(Integer.valueOf(columnas[2]));
+                empleadoAux.setAntiguedad(Integer.valueOf(columnas[3]));
+                if (columnas.length == 5){
+                    empleadoAux.setIdDep(columnas[4]);
+                }
+                empleados.add(empleadoAux);
+
+            }
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void guardarEmpleadosCSV(ArrayList<Empleado> empleados) {
+        try (PrintWriter writer = new PrintWriter(new FileWriter("target/empleados.csv"), true)) {
+
+            for (Empleado empleado : empleados) {
+
+                writer.println(empleado.getNombre() + "," + empleado.getSueldo() + "," + empleado.getAnyo_nacimiento() + "," + empleado.getAntiguedad());
+
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        empleados.clear();
+    }
+    public static void guardarEmpleadosConDepartamentoCSV(ArrayList<Empleado> empleados) {
+        try (PrintWriter writer = new PrintWriter(new FileWriter("target/empleadosConDepartamento.csv"), true)) {
+
+            for (Empleado empleado : empleados) {
+
+                writer.println(empleado.getNombre() + "," + empleado.getSueldo() + "," + empleado.getAnyo_nacimiento() + "," + empleado.getAntiguedad()+","+empleado.getIdDep());
+
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        empleados.clear();
+    }
+    public static Departments unirEmpleados(ArrayList<Empleado> empleados) {
+        if (Files.exists(Path.of("target/empleadosConDepartamento.csv"))) {
+            leerCSV(empleados, "target/empleadosConDepartamento.csv");
+        }
+        ReadDepartmentServices readDepartmentServices = new ReadDepartmentServices();
+        Departments departments =readDepartmentServices.readDepartment();
+        for(Department department: departments.getDepartments()) {
+            ArrayList<Empleado> empleadosPorDepartamento = new ArrayList<>();
+            for (Empleado empleado: empleados){
+                String numDepartamento = empleado.getIdDep();
+                if (department.getId().equals(numDepartamento)){
+                    empleadosPorDepartamento.add(empleado);
+                }
+
+            }
+            department.setEmpleados(empleadosPorDepartamento);
+        }
+return departments;
+    }
+
 
 }
 
