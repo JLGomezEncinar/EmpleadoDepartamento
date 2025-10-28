@@ -49,11 +49,23 @@ public class MenuInicial {
             println("Introduce el nombre del empleado");
             empleadoAux.setNombre(pideOpcion());
             println("Introduce el suedo del empleado");
-            empleadoAux.setSueldo(Double.parseDouble(pideOpcion()));
+            try {
+                empleadoAux.setSueldo(Double.parseDouble(pideOpcion()));
+            } catch (NumberFormatException e) {
+                println("El sueldo debe ser un numero");
+            }
             println("Introduce el año de nacimiento del empleado");
-            empleadoAux.setAnyo_nacimiento(Integer.parseInt(pideOpcion()));
+            try {
+                empleadoAux.setAnyo_nacimiento(Integer.parseInt(pideOpcion()));
+            } catch (NumberFormatException e) {
+                println("El año de nacimiento debe ser un entero");
+            }
             println("Introduce la antiguedad del empleado");
+            try {
             empleadoAux.setAntiguedad(Integer.parseInt(pideOpcion()));
+            } catch (NumberFormatException e) {
+                println("La antigüedad debe ser un entero");
+            }
             empleados.add(empleadoAux);
 
 
@@ -79,7 +91,6 @@ public class MenuInicial {
 
     private void asignarEmpleado() {
         String avanzar;
-        departmentList = (ArrayList<Department>) readDepartmentServices.readDepartment().getDepartments();
         userMethods.leerCSV(empleados,"target/empleados.csv");
         for (Empleado empleado : empleados) {
             do {
@@ -107,7 +118,7 @@ public class MenuInicial {
             case "0" -> salir = true;
             case "1" -> menuEmpleados();
             case "2" -> {
-                ArrayList<Department> departmentList = (ArrayList<Department>) readDepartmentServices.readDepartment().getDepartments();
+                departmentList = (ArrayList<Department>) readDepartmentServices.readDepartment().getDepartments();
                 for (Department department: departmentList){
                     println(department.getId()+" "+department.getName()+" "+department.getLocality());
                 }
