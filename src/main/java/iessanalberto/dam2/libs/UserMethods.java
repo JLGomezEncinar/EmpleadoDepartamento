@@ -14,6 +14,9 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Scanner;
+
+import static java.lang.IO.println;
 
 public class UserMethods {
     static void mostrarEnPantalla(String mensaje) {
@@ -179,6 +182,34 @@ public class UserMethods {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+    public static double leerDecimal(String mensaje, Scanner scanner){
+        double decimal = 0;
+        boolean valido = false;
+        while (!valido){
+            println(mensaje);
+            try {
+                decimal = Double.parseDouble(scanner.nextLine());
+                valido = true;
+            } catch (NumberFormatException e) {
+                println("El valor introducido no es válido");
+            }
+        }
+        return decimal;
+    }
+    public static int leerEntero(String mensaje, Scanner scanner){
+        int entero = 0;
+        boolean valido = false;
+        while (!valido){
+            println(mensaje);
+            try {
+                entero = Integer.parseInt(scanner.nextLine());
+                valido = true;
+            } catch (NumberFormatException e) {
+                println("El valor introducido no es válido");
+            }
+        }
+        return entero;
     }
 
     public static void guardarEmpleadosCSV(ArrayList<Empleado> empleados) {

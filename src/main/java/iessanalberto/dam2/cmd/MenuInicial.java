@@ -32,7 +32,7 @@ public class MenuInicial {
         do {
             System.out.println("Elige una opcion:");
             System.out.println("1. Introducir empleados");
-            System.out.println("2. Mostrar departamentos.xml");
+            System.out.println("2. Cargar departamentos.xml");
             System.out.println("3. Añadir empleados a departamento");
             System.out.println("4. Leer nuevosEmpleados.json");
             System.out.println("5. Escribir empresa.xml y empresa.json");
@@ -48,24 +48,9 @@ public class MenuInicial {
             Empleado empleadoAux = new Empleado();
             println("Introduce el nombre del empleado");
             empleadoAux.setNombre(pideOpcion());
-            println("Introduce el suedo del empleado");
-            try {
-                empleadoAux.setSueldo(Double.parseDouble(pideOpcion()));
-            } catch (NumberFormatException e) {
-                println("El sueldo debe ser un numero");
-            }
-            println("Introduce el año de nacimiento del empleado");
-            try {
-                empleadoAux.setAnyo_nacimiento(Integer.parseInt(pideOpcion()));
-            } catch (NumberFormatException e) {
-                println("El año de nacimiento debe ser un entero");
-            }
-            println("Introduce la antiguedad del empleado");
-            try {
-            empleadoAux.setAntiguedad(Integer.parseInt(pideOpcion()));
-            } catch (NumberFormatException e) {
-                println("La antigüedad debe ser un entero");
-            }
+            empleadoAux.setSueldo(userMethods.leerDecimal("Introduce el sueldo del empleado",scanner));
+            empleadoAux.setAnyo_nacimiento(userMethods.leerEntero("Introduce el año de nacimiento del empleado",scanner));
+            empleadoAux.setAntiguedad(userMethods.leerEntero("Introduce la antigüedad del empleado",scanner));
             empleados.add(empleadoAux);
 
 
@@ -90,20 +75,24 @@ public class MenuInicial {
     }
 
     private void asignarEmpleado() {
-        String avanzar;
-        userMethods.leerCSV(empleados,"target/empleados.csv");
-        for (Empleado empleado : empleados) {
-            do {
-                println("Introduce el departamento al que se asignará el empleado " + empleado.getNombre() + ":");
-                int numDepartamento = 1;
-                for (Department department : departmentList) {
-                    println(numDepartamento + "-" + department.getName());
-                    numDepartamento++;
-                }
-                avanzar = this.pideOpcion();
-                introducirDepartamento(avanzar,empleado);
-            } while (!seguir);
-            seguir = false;
+        if (departmentList.isEmpty()){
+            println("Debe cargar la lista de departamentos primero");
+        } else {
+            String avanzar;
+            userMethods.leerCSV(empleados, "target/empleados.csv");
+            for (Empleado empleado : empleados) {
+                do {
+                    println("Introduce el departamento al que se asignará el empleado " + empleado.getNombre() + ":");
+                    int numDepartamento = 1;
+                    for (Department department : departmentList) {
+                        println(numDepartamento + "-" + department.getName());
+                        numDepartamento++;
+                    }
+                    avanzar = this.pideOpcion();
+                    introducirDepartamento(avanzar, empleado);
+                } while (!seguir);
+                seguir = false;
+            }
         }
         userMethods.guardarEmpleadosConDepartamentoCSV(empleados);
     }
