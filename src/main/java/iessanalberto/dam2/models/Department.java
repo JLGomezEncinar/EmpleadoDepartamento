@@ -1,5 +1,6 @@
 package iessanalberto.dam2.models;
 
+import com.google.gson.annotations.Expose;
 import jakarta.xml.bind.annotation.XmlAttribute;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElementWrapper;
@@ -10,9 +11,13 @@ import java.util.ArrayList;
 @XmlRootElement(name = "departamento")
 
 public class Department {
+    @Expose
     private String id;
+    @Expose
     private String name;
+    @Expose
     private String locality;
+    @Expose
     private ArrayList<Empleado> empleados;
 
     @XmlElement(name = "nombre")

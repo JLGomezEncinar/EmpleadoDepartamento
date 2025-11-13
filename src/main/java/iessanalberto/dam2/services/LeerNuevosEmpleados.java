@@ -11,15 +11,15 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.LocalDate;
 import java.util.ArrayList;
+
+import static java.lang.IO.println;
 
 
 public class LeerNuevosEmpleados {
 
     public static ArrayList<Empleado> leerEmpleadosJSON(Path path) {
         UserMethods userMethods = new UserMethods();
-        String mensaje = "";
         ArrayList<Empleado> empleados = new ArrayList<>();
 
         if (Files.isReadable(path)) {
@@ -45,15 +45,13 @@ public class LeerNuevosEmpleados {
 
 
             } catch (IOException e) {
-                mensaje = "Error al leer la ruta del archivo JSON";
+                println("No se ha podido leer el archivo");
             }
-
+            println("Se ha leído correctamente el archivo JSON");
         }
         return empleados;
     }
     public static ArrayList<Empleado> leerEmpleadosConDepartamentoJSON(Path path) {
-        UserMethods userMethods = new UserMethods();
-        String mensaje = "";
         ArrayList<Empleado> empleados = new ArrayList<>();
 
         if (Files.isReadable(path)) {
@@ -66,11 +64,12 @@ public class LeerNuevosEmpleados {
                 Type listType = new TypeToken<ArrayList<Empleado>>() {
                 }.getType();
                 empleados = gson.fromJson(empleadoJsonString, listType);
+                println("Se ha leído correctamente el archivo JSON");
 
 
 
             } catch (IOException e) {
-                mensaje = "Error al leer la ruta del archivo JSON";
+                println("No se ha podido leer el archivo");
             }
 
         }

@@ -48,7 +48,7 @@ public class MenuInicial {
             Empleado empleadoAux = new Empleado();
             println("Introduce el nombre del empleado");
             empleadoAux.setNombre(pideOpcion());
-            empleadoAux.setSueldo(userMethods.leerDecimal("Introduce el sueldo del empleado",scanner));
+            empleadoAux.setSueldo(userMethods.leerDouble("Introduce el sueldo del empleado",scanner));
             empleadoAux.setAnyo_nacimiento(userMethods.leerEntero("Introduce el año de nacimiento del empleado",scanner));
             empleadoAux.setAntiguedad(userMethods.leerEntero("Introduce la antigüedad del empleado",scanner));
             empleados.add(empleadoAux);
@@ -70,7 +70,7 @@ public class MenuInicial {
             comprobar = false;
 
         } while (continuar.equals("s"));
-        userMethods.guardarEmpleadosCSV(empleados);
+        println(userMethods.guardarEmpleadosCSV(empleados));
 
     }
 
@@ -79,7 +79,7 @@ public class MenuInicial {
             println("Debe cargar la lista de departamentos primero");
         } else {
             String avanzar;
-            userMethods.leerCSV(empleados, "target/empleados.csv");
+           println(userMethods.leerCSV(empleados, "target/empleados.csv"));
             for (Empleado empleado : empleados) {
                 do {
                     println("Introduce el departamento al que se asignará el empleado " + empleado.getNombre() + ":");
@@ -90,11 +90,13 @@ public class MenuInicial {
                     }
                     avanzar = this.pideOpcion();
                     introducirDepartamento(avanzar, empleado);
+                    println("Se ha guardado al empleado en el departamento: " +avanzar);
                 } while (!seguir);
                 seguir = false;
             }
+            println(userMethods.guardarEmpleadosConDepartamentoCSV(empleados));
         }
-        userMethods.guardarEmpleadosConDepartamentoCSV(empleados);
+
     }
 
 
@@ -119,11 +121,11 @@ public class MenuInicial {
             }
             case "5" -> {
                 try {
-                    escribirEmpleados.escribirEmpresa(empleados);
+                    println(escribirEmpleados.escribirEmpresa(empleados));
                     empleados.clear();
-                    escribirEmpleados.escribirEmpresaJSON(empleados);
+                    println(escribirEmpleados.escribirEmpresaJSON(empleados));
                 } catch (JAXBException e) {
-                    throw new RuntimeException(e);
+                    println("Error a la hora de generar los archivos");
                 }
             }
 

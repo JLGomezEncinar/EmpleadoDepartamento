@@ -1,17 +1,25 @@
 package iessanalberto.dam2.models;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlTransient;
 import jakarta.xml.bind.annotation.XmlType;
 
+import java.beans.Transient;
+
 @XmlType(propOrder = {"nombre", "sueldo","anyo_nacimiento","antiguedad"})
 public class Empleado {
+    @Expose
     private String nombre;
+    @Expose
     private double sueldo;
+    @Expose
     @SerializedName("año")
     private Integer anyo_nacimiento;
+    @Expose
     private Integer antiguedad;
+// No marcamos esta variable como Expose para que no nos aparezca en el JSON de la empresa
     private String idDep;
 @XmlTransient
     public String getIdDep() {

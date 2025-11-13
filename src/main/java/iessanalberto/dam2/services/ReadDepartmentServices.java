@@ -9,6 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
+import static java.lang.IO.println;
 
 
 public class ReadDepartmentServices {
@@ -23,12 +24,12 @@ public class ReadDepartmentServices {
                 jaxbContext = JAXBContext.newInstance(Departments.class);
                 Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
                 departments = (Departments) jaxbUnmarshaller.unmarshal(ruta.toFile());
-
+                println("Se han cargado correctamente los departamentos");
 
 
 
             } catch (JAXBException e) {
-                throw new RuntimeException(e);
+                println("No se han podido cargar los departamentos");
             }
         }
         return departments;
